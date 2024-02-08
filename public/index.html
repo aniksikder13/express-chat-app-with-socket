@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat here</title>
+    <style>
+        #inputText{
+            width: 100%;
+            padding: 7px 15px;
+            display: block;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+        #sendBtn{
+            padding: 7px 15px;
+            background-color: blue;
+            color: white;
+        }
+        #messageList{
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Message Here...</h1>
+    <form id="messageForm">
+        <input id="inputText" type="text" placeholder="Message here...">
+        <button id="sendBtn">Send Message</button>
+    </form>
+    <ul id="messageList"></ul>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('http://localhost:4000');
+
+        socket.on('connect', () => {
+
+        })
+
+        socket.on('newChatMessageFromServer', newChatMessageFromServer => {
+
+                console.log(newChatMessageFromServer)
+
+                const list = document.createElement("li")
+                list.innerText = newChatMessageFromServer.text
+                document.getElementById('messageList').appendChild(list)
+        })
+
+        document.getElementById('messageForm').addEventListener('submit', (e)=> {
+            e.preventDefault()
+            const messageText= document.getElementById('inputText').value
+
+            socket.emit('chatMessageFromClient', {text: messageText})
+        })
+
+    </script>
+</body>
+</html>
