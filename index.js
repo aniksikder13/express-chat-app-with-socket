@@ -1,5 +1,6 @@
 const express= require('express')
 const socketIo= require('socket.io')
+const nameSpaces= require('./data/nameSpaces')
 
 const app= express()
 
@@ -9,9 +10,8 @@ const server= app.listen(4000)
 const io= socketIo(server)
 
 io.on('connection', socket => {
-    console.log(`${socket.id} is connected`)
+    socket.emit('connectionMsgFromServer', {msg: `${socket.id} is connected successfully`})
 
-    socket.on('chatMessageFromClient', chatMessageFromClient => {
-        io.emit('newChatMessageFromServer', {text: chatMessageFromClient.text})
-    })
+    // Sending NameSpaces to Client
+    socket.emit('namespaceFromServer', {nameSpaces: nameSpaces})
 })
