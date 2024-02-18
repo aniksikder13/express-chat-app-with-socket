@@ -1,6 +1,6 @@
 const socket= io('http://localhost:4000')
 
-// Make connection
+// Make socket connection
 socket.on('connect', () => {
     console.log('connected')
 })
@@ -12,19 +12,23 @@ socket.on('connectionMsgFromServer', data => {
 
 // Get NameSpaces from socket
 socket.on('namespaceFromServer', data => {
-    console.log(data.nameSpaces)
-
-    // Inserting Name Spaces into DOM
-    const namespacesContainer = document.querySelector('.namespaces');
+    const namespacesContainer = document.querySelector('.namespaces')
+    // Cleaning Namespaces DOM
+    namespacesContainer.innerHTML= ""
+    // Inserting Namespaces into DOM
     data.nameSpaces.forEach(item => {
-        const nameSpaceList = document.createElement('div');
-        const nameSpaceImage = document.createElement('img');
-
-        nameSpaceImage.src = item.image;
-        nameSpaceList.classList.add('namespace');
-        nameSpaceList.setAttribute('ns', item.name);
-
-        nameSpaceList.appendChild(nameSpaceImage);
-        namespacesContainer.appendChild(nameSpaceList);
+        namespacesContainer.innerHTML += `<div class="namespace" ns=${item.endpoint}><img src=${item.image}></div>`
     })
+
+    // Inserting Rooms into DOM
+    Array.from(document.querySelectorAll('.namespace')).forEach(element => {
+        element.addEventListener('click', event => {
+            nsJoin(element, data)
+        })
+        nsJoin(document.querySelectorAll('.namespace')[0], data)
+    })
+
+
+
+
 })
